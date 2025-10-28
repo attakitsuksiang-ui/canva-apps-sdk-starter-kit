@@ -1,62 +1,47 @@
-import { Button, Rows, Text } from "@canva/app-ui-kit";
-import { requestOpenExternalUrl } from "@canva/platform";
+import { Button,Text,MultilineInput } from "@canva/app-ui-kit";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as styles from "styles/components.css";
-import { useAddElement } from "utils/use_add_element";
+import { addElementAtPoint } from "@canva/design";
+import type { TextElementAtPoint } from "@canva/design";
+import { useState } from 'react';
+import {datav} from "./dat"
 
-export const DOCS_URL = "https://www.canva.dev/docs/apps/";
+export const App =  () => {
+  const [input, setInput] = useState("input");
+  const [value, setValue] = useState(" ");
 
-export const App = () => {
-  const addElement = useAddElement();
-  const onClick = () => {
-    addElement({
-      type: "text",
-      children: ["Hello world!"],
-    });
-  };
 
-  const openExternalUrl = async (url: string) => {
-    const response = await requestOpenExternalUrl({
-      url,
-    });
+const onClick = async() =>{
+await addElementAtPoint(datav(input));
 
-    if (response.status === "aborted") {
-      // user decided not to navigate to the link
-    }
-  };
+}
+
+const onCh = async(e:string) =>{
+  setInput(e);
+}
 
   const intl = useIntl();
 
   return (
     <div className={styles.scrollContainer}>
-      <Rows spacing="2u">
+      
         <Text>
-          <FormattedMessage
-            defaultMessage="
-              To make changes to this app, edit the <code>src/app.tsx</code> file,
-              then close and reopen the app in the editor to preview the changes.
-            "
-            description="Instructions for how to make changes to the app. Do not translate <code>src/app.tsx</code>."
-            values={{
-              code: (chunks) => <code>{chunks}</code>,
-            }}
-          />
+          {value}
         </Text>
+       
+        <MultilineInput
+        onChange={onCh}
+        value={input}
+        />          
         <Button variant="primary" onClick={onClick} stretch>
           {intl.formatMessage({
-            defaultMessage: "Do something cool",
+            defaultMessage: "สร้างข้อความ",
             description:
               "Button text to do something cool. Creates a new text element when pressed.",
           })}
-        </Button>
-        <Button variant="secondary" onClick={() => openExternalUrl(DOCS_URL)}>
-          {intl.formatMessage({
-            defaultMessage: "Open Canva Apps SDK docs",
-            description:
-              "Button text to open Canva Apps SDK docs. Opens an external URL when pressed.",
-          })}
-        </Button>
-      </Rows>
+        </Button>        
+          
+      
     </div>
   );
 };
